@@ -1,9 +1,7 @@
 App42-Todo-List
 ================
 
-App42 Client SDK sample for HTML5
-
-# About App:
+App42 Client SDK sample for HTML5.
 
 Create upcoming event or task and make your to-do list and share with your friends using [App42CloudAPI] (http://api.shephertz.com/apis) javascript SDK.
 
