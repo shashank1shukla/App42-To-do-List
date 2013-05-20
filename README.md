@@ -46,10 +46,10 @@ password = ("#pwd").val(),
 email = ("#email");
 user.createUser(userName, password, email,{
 success: function(object) {
-
+// callbacl response when user is successfully created.
 },
 error: function(error) {
-
+// callback when user already created or email already existes.
 }
 });
 ```
@@ -69,7 +69,7 @@ $.session.set('login', name);
 $.session.set('sessionId', sId);
 },
 error: function(error) {
-
+// callback when user not found.
 }
 });
 ```
@@ -78,10 +78,10 @@ Get all app users.
 ```
 user.getAllUsers({
 success: function(object) {
-
+// create your app users list.
 },
 error: function(error) {
-
+// when app has no user yet.
 }
 });
 ```
@@ -90,10 +90,10 @@ Get detail info of user.
 var myProfile = ("#myProfile").val();
 user.getUser(myProfile,{
 success: function(object) {
-
+// view user detail info.
 },
 error: function(error) {
-
+// call when user not exists.
 }
 });
 ```
@@ -142,10 +142,11 @@ permission:Permission.READ
 aclList.push(point)
 storage.revokeAccessOnDoc(dbName, collectionName,docId, aclList,{
 success: function(object) {
-
+// callback for success 
 
 },
 error: function(error) {
+// callback when error occurred.
 }
 });  
 ```
@@ -155,9 +156,10 @@ Get all To-do List created by you or shared with you
 ```
 storage.findAllDocuments(dbName, collectionName,{
 success: function(object) {
+// Add all To-do to list view
 },
 error: function(error) {
-
+// No To-do found.
 }
 ```
 
@@ -166,9 +168,10 @@ Remove your To-do
 ```
 storage.deleteDocumentById(dbName,collectionName,docId,{
 success: function(object) {
+// delete To-do successfully.
 },
 error: function(error) {
-  
+  // To-do not found.
 }
 })
 ```
