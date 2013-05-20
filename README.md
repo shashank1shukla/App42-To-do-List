@@ -104,9 +104,12 @@ Initialize App42Storage
 var storage  = new App42Storage(),
 dbName = "Your db",
 collectionName = "Your Collection";
+// Get logged in user session id from authenticate response and set in to storage object.
+var getSession = $.session.get('sessionId');
+storage.setSessionId(getSession);
 ```
 
-Save To-do using jsonData with storage
+Save To-do using jsonData with storage 
 
 ```
 var todoName = $("#tName").val(),
@@ -117,8 +120,12 @@ location = $("#location").val(),
 json = "{\"task\":'"+todoName+"',\"startDate\":'"+startDate+"',\"endDate\":'"+endDate+"',\"time\":'"+time+"',\"location\":'"+location+"'}";
 storage.insertJSONDocument(dbName, collectionName, json,{
 success: function(object) {
+// Add To-do in to list 
+// When to create any To-do this will accessible to every one
+// To remove accessibility from other user call revokeAccessOnDoc method in storage object
 },
 error: function(error) {
+// callback when error occurred.
 }
 }); 
 ```
@@ -126,7 +133,7 @@ error: function(error) {
 Remove Access from other users to view your To-do
 
 ```
-storage.setSessionId(sessionId);
+var docId = "get from insertJSONDocument response"
 var aclList = new Array();
 var point={
 user:"PUBLIC",
@@ -135,9 +142,8 @@ permission:Permission.READ
 aclList.push(point)
 storage.revokeAccessOnDoc(dbName, collectionName,docId, aclList,{
 success: function(object) {
-window.location = ('#todoList');
-ReloadPage();
-$("#addTodoLoader").hide();
+
+
 },
 error: function(error) {
 }
@@ -158,26 +164,24 @@ error: function(error) {
 Remove your To-do
 
 ```
-storage.setSessionId(sessionId);
-    storage.deleteDocumentById(dbName,collectionName,docId,{
-        success: function(object) {
-        },
-        error: function(error) {
-            
-        }
-    })
+storage.deleteDocumentById(dbName,collectionName,docId,{
+success: function(object) {
+},
+error: function(error) {
+  
+}
+})
 ```
 Get detail of To-do
 
 ```
-storage.setSessionId(sessionId);
-    storage.findDocumentById(dbName,collectionName,docId,{
-        success: function(object) {
-        },
-        error: function(error) {
-            
-        }
-    })
+storage.findDocumentById(dbName,collectionName,docId,{
+success: function(object) {
+},
+error: function(error) {
+ 
+}
+})
 ```
 
 Share your To-do with your selected user or type his/her name. 
@@ -192,9 +196,7 @@ permission:Permission.READ
 aclList.push(point1)
 // get documentId from local storage.
 var tId = $.session.get('documentId');
-// logged in user session id from authenticate response.
-var getSession = $.session.get('sessionId');
-storage.setSessionId(getSession);
+
 storage.grantAccessOnDoc(dbName, collectionName,tId, aclList,{
 success: function(object) {
 
