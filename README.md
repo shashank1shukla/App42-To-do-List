@@ -22,7 +22,7 @@ __Feature List :__
 
 __Initialize App42 :__
 
-Edit index.html file and put your APIKey and SecretKey overhear.
+Edit index.html file and put your APIKey and SecretKey overhere.
 
 ```
 App42.initialize("Your APIKey","Your SecretKey");
