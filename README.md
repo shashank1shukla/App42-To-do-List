@@ -14,7 +14,7 @@ __Feature List :__
 5. Share with your friends who has use this app
 6. Support all mobile browsers and desktop browsers
 
-# Runnnig Sample:
+# Running Sample:
 
 1. [Register] (https://apphq.shephertz.com/register) with App42 platform
 2. Go to dashboard and click on the App Create .
