@@ -43,7 +43,7 @@ Sign up for a new account.
 ```
 var userName = ("#userName").val(),
 password = ("#pwd").val(),
-email = ("#email");
+email = ("#email").val();
 user.createUser(userName, password, email,{
 success: function(object) {
 // callbacl response when user is successfully created.
@@ -60,7 +60,7 @@ var userName = ("#loginName").val(),
 password = ("#loginPassword").val();
 user.authenticate(userName, password,{
 success: function(object) {
-// get userName and sessionId from authenticat user response
+// get userName and sessionId from authenticate user response
 var userObj = JSON.parse(object)
 var name = userObj.app42.response.users.user.userName;
 var sId =  userObj.app42.response.users.user.sessionId;
