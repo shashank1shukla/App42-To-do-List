@@ -1,0 +1,495 @@
+<html>
+    <head>
+        <title>App4-To-do-List</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/jQueryMobile.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="css/swipe.css" />
+        <link rel="stylesheet" href="css/popup.css" />
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+        <script src="js/App42-all-1.1.1.min.js"></script>
+        <script src="js/user.js"></script>
+        <script src="js/todo.js"></script>
+        <script src="js/jquery.session.js"></script>
+        <script src="js/message.js"></script>
+        <script src="js/popup.js"></script>
+        <style type="text/css">
+            .message-dismiss {
+                padding-left: 0.5em;
+                font-weight: normal;
+                color: #777 !important;
+            }
+            .message-container {
+                padding: 0.5em;
+                line-height: 1em;
+            }
+            .message-container p {
+                padding: 0 1em;
+            }
+            .message-container p .ui-icon {
+                margin-right: .3em;
+            }
+        </style>
+        <script>
+            $(document).ready(function() {
+                App42.initialize("YOUR API KEY","YOUR SECRET KEY");
+                var loggedIn = $.session.get('login');
+                var loggedInEmail = $.session.get('uEmail');
+                var todoTask = $.session.get('tName');
+                var todoSDate = $.session.get('tStartDate');
+                var todoEDate = $.session.get('tEndDate');
+                var todoTime = $.session.get('tTime');
+                var todoLocation = $.session.get('tLocation');
+                var ownName = $.session.get('ownerName');
+                var frend = $.session.get('frndName');
+                var friend = $.session.get('frendz');
+                if(loggedIn == 'undefined' || loggedIn == null ){
+                    $("#signUpBtn").show();
+                    $("#loginBtn").show();
+                    $("#loginBtn2").show();
+                    $("#loginBtn3").show();
+                    $("#logoutSpan").hide();
+                    $("#logoutBtn2").hide();
+                    $("#logoutBtn3").hide();
+                    
+                }else{
+                    $("#signUpBtn").hide();
+                    $("#loginBtn").hide();
+                    $("#loginBtn2").hide();
+                    $("#loginBtn3").hide();
+                    $("#logoutSpan").show();
+                    $("#logoutBtn2").show();
+                    $("#logoutBtn3").show();
+                    $("#userloggedin").html(loggedIn);
+                    $("#userloggedinn").html(loggedIn);
+                    $("#userloggedin2").html(loggedIn);
+                    $("#userloggedin5").html(loggedIn);
+                    $("#userloggedinPanel").html(loggedIn);
+                    $("#userloggedinPanel1").html(loggedIn);
+                    $("#userloggedinPanel2").html(loggedIn);
+                    $("#userloggedinPanel3").html(loggedIn);
+                    $("#userloggedinPanel4").html(loggedIn);
+                    $("#userloggedinPanel5").html(loggedIn);
+                    $("#userEmailIdPanel").html(loggedInEmail);
+                    $("#userEmailIdPanel1").html(loggedInEmail);
+                    $("#userEmailIdPanel2").html(loggedInEmail);
+                    $("#userEmailIdPanel3").html(loggedInEmail);
+                    $("#userEmailIdPanel4").html(loggedInEmail);
+                    $("#userEmailIdPanel5").html(loggedInEmail);
+                    $("#owner_name").html(ownName);
+                    $("#friendName").html(frend);
+                    $("#friendName1").html(friend);
+                    $("#task").html(todoTask);
+                    $("#sdate").html(todoSDate);
+                    $("#edate").html(todoEDate);
+                    $("#timess").html(todoTime);
+                    $("#searchMap").val(todoLocation);
+                    findAllDocuments();
+                    friends();
+                    refreshMap();
+                }
+            });
+       
+        
+        </script>
+        <script src="js/gmap.js"></script>
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
+    </head>
+    <body>
+        <!-------------------------------------------------------------- /HOME PAGE --------------------------------------------------------------------------->
+        <div data-role="page" id="home" data-add-back-btn="true" data-back-btn-text="Back"  style="background: #000000 url('images/pagebg.png'); background-repeat:repeat-x; background-position:center;">
+            <div data-role="header" data-theme="f"> <a href="#createUser" id="signUpBtn" class="ui-btn-right">Sign Up</a> <a href="#login" id="loginBtn" class="ui-btn-left">LogIn</a> <a href="javascript:void(0);" id="logoutSpan" style="display:none;" class="ui-btn-left" onClick="logOut();">Logout</a>
+                <h1>About App</h1>
+            </div>
+            <div data-role="content" id="contents">
+                <p class="welcomeTxt"> Creates User for the App. App42 Cloud
+                    API's provides a complete User Management for any
+                    Mobile or Web App. It supports User registration, retrieval, state management
+                    e.g. lock, delete and Authentication.Along with User management the platform 
+                    provides API's for persistent SessionManagement </p>
+                <h3 class="welcomeTxtH"> In this sample app,there are two modules.... </h3>
+                <a href="#login" data-role="button" data-inline="true" data-theme="b" class="btn_wrapper">Get Started</a> </div>
+            <div data-role="footer" data-position="fixed">
+                <h3>
+                    <div class="copyrightTxt">Copyright &copy; 2013 ShepHertz Technologies Pvt Ltd. All rights reserved.</div>
+                </h3>
+            </div>
+            <!-- /footer -->
+        </div>
+        <!-------------------------------------------------------------- /LOGIN PAGE --------------------------------------------------------------------------->
+        <div data-role="page" id="login" data-add-back-btn="true" data-back-btn-text="Back" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+            <div data-role="header" data-theme="f"> <a href="#createUser"  class="ui-btn-right">Sign Up</a>
+                <h1>LogIn</h1>
+            </div>
+            <div data-role="content">
+                <label for="text-3">User Name</label>
+                <span id="userNameBlank" style="display: none; font-family:Garamond;font-size:14px;font-style:italic;font-weight:bold;text-decoration:none;text-transform:capitalize;font-variant:small-caps;color:330000;"></span>
+                <input type="text" data-clear-btn="true" placeholder="User Name..." name="text-3" id="uName" value="">
+                <label for="password-2" class="lineHeight">User Password: </label>
+                <span id="passwordBlank" style="font-family:Garamond;font-size:14px;font-style:italic;font-weight:bold;text-decoration:none;text-transform:capitalize;font-variant:small-caps;color:330000;"></span>
+                <input type="password" data-clear-btn="true" placeholder="Password..." name="password-2" id="pwd" value="" autocomplete="off">
+                <a href="javascript:void(0);" data-role="button"   data-theme="e" id="submit" onclick ="login();" class="btn_margin">Log In</a> <br>
+                <div class="spinner2"> <img src="images/spinner.gif" id ="logInLoader" style= "display:none;"> </div>
+                <div>
+                    <p style="text-align:center;"><span id="invalidUser" class="errerMsg"></span></p>
+                </div>
+                <br>
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <h6>
+                    <div class="copyrightTxt">Copyright &copy; 2013 ShepHertz Technologies Pvt Ltd. All rights reserved.</div>
+                </h6>
+            </div>
+        </div>
+        <!-------------------------------------------------------------- /CREATE USER PAGE --------------------------------------------------------------------------->
+        <div data-role="page" id="createUser" data-add-back-btn="true" data-back-btn-text="Back" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+            <div data-role="header" data-theme="f"> <a href="#login"  class="ui-btn-right">LogIn</a>
+                <h1>Registration</h1>
+            </div>
+            <div class="spinner"> <img src="images/spinner.gif" id ="createUserLoader" style= "display:none;"> </div>
+            <div id="unAuthorized1" > </div>
+            <br>
+            <br>
+            <div data-role="content">
+                <label for="text-3">User Name</label>
+                <span id="userNameBlank1" style="font-family:Garamond;font-size:14px;font-style:italic;font-weight:bold;text-decoration:none;text-transform:capitalize;font-variant:small-caps;color:330000;"></span>
+                <input type="text" data-clear-btn="true" placeholder="User Name..." name="text-3" id="userName" value="">
+                <label for="email-2">User Email</label>
+                <span id="emailBlank1" style="font-family:Garamond;font-size:14px;font-style:italic;font-weight:bold;text-decoration:none;text-transform:capitalize;font-variant:small-caps;color:330000;"></span>
+                <input type="email" data-clear-btn="true" placeholder="Email Id..." name="email-2" id="userEmail" value="">
+                <label for="password-2">User Password: </label>
+                <span id="passwordBlank1" style="font-family:Garamond;font-size:14px;font-style:italic;font-weight:bold;text-decoration:none;text-transform:capitalize;font-variant:small-caps;color:330000;"></span>
+                <input type="password" data-clear-btn="true" placeholder="Password..." name="password-2" id="userPwd" value="" autocomplete="off">
+                <a href="javascript:void(0);" data-role="button"  data-theme="e" id="submita" onClick="createUser();">Create User</a> </div>
+            <div data-role="footer" data-position="fixed">
+                <h3>
+                    <div class="copyrightTxt">Copyright &copy; 2013 ShepHertz Technologies Pvt Ltd. All rights reserved.</div>
+                </h3>
+            </div>
+            <!-- /footer -->
+        </div>
+        <!-------------------------------------------------------------- /SUCCESS PAGE --------------------------------------------------------------------------->
+        <div data-role="page" id="success" data-add-back-btn="true" data-back-btn-text="Back" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+            <div data-role="header" data-theme="f">
+                <h1>Registration Successful</h1>
+                <a href="#home" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a> </div>
+            <div class="spinner"> <img src="images/spinner.gif" id ="successLoader" style= "display:none;"> </div>
+            <br>
+            <br>
+            <div data-role="content">
+                <div text-align="center">
+                    <h1>Your Account Is Successfully Created: </h1>
+                    <div>
+                        <h3>User Name: </h3>
+                        <span id="newUserName"></span></div>
+                    <div>
+                        <h3>Email: </h3>
+                        <span id="newUserEmail"></span> </div>
+                </div>
+                <a href="#login" data-role="button"  data-theme="e" id="submit" >Log In</a> </div>
+            <br>
+            <br>
+            <div data-role="footer" data-position="fixed">
+                <h6>
+                    <div class="copyrightTxt">Copyright &copy; 2013 ShepHertz Technologies Pvt Ltd. All rights reserved.</div>
+                </h6>
+            </div>
+        </div>
+        <!-------------------------------------------------------------- /WELCOME PAGE --------------------------------------------------------------------------->
+        <div data-role="page" id="welcome" data-add-back-btn="true" data-back-btn-text="Back" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+            <div data-role="header" data-theme="f">
+                <h1>Home</h1>
+                <a href="#userAccount" data-rel="popup" data-transition="slide" data-position-to="window" data-role="button"  class="ui-btn-right">Account</a> </div>
+            <div data-role="popup" id="userAccount" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0"> <span class="welcomeTxtH2"> Using App As :-</span>
+                <h3 class="emailPanel"><span id="userloggedinPanel"></span></h3>
+                <span id="userEmailIdPanel" class="adminPanel"></span>
+                <button data-theme="a" data-icon="home" data-mini="true">
+                    <a href="#welcome">Home</a>
+                </button>
+                <button data-theme="a" data-icon="delete" data-mini="true">Close</button>
+                <a href="javascript:void(0);"  data-role="button" data-theme="a" onClick="logOut();">Logout</a> </div>
+            <div class="spinner"> <img src="images/spinner.gif" id ="welcomeLoader" style= "display:none;"> </div>
+            <br>
+            <br>
+            <div data-role="content">
+                <h1 class="welcomeMsg">Welcome </h1>
+                <h2 class="welcomeMsg"><span id="userloggedin" ></span></h2>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div data-role="footer" data-id="foo1" data-position="fixed">
+                <div data-role="navbar" data-iconpos="bottom">
+                    <ul>
+                        <li><a href="#welcome" data-prefetch="true" data-icon="home" data-transition="flow" data-theme="b">Home</a></li>
+                        <li><a href="#testing" data-prefetch="true" data-icon="grid" data-transition="flow">Friends</a></li>
+                        <li><a href="#add_todo" data-prefetch="true" data-rel="dialog" data-icon="plus" data-transition="flow">Add Todo</a></li>
+                        <li><a href="#todoList" data-prefetch="true" data-icon="grid" data-transition="flow">Todo List</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /footer -->
+        </div>
+        <!-------------------------------------------------------------- /TODO LIST PAGE --------------------------------------------------------------------------->
+        <div data-role="page" id="todoList" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+            <div data-role="header" data-position="inline" data-theme="f"> <a href="#welcome" data-icon="arrow-l" data-transition="slidefade" class="ui-btn-left">Back</a> <a href="#userAccount1" data-rel="popup" data-transition="slide" data-position-to="window" data-role="button"  class="ui-btn-right">Account</a> <a href="#login" data-icon="back" id="loginBtn3" class="ui-btn-right">Login</a>
+                <h1>ToDo List <span class="" id="userloggedin2" style="display:inline; padding-left: 300px;"></span></h1>
+            </div>
+            <div class="spinner"> <img src="images/spinner.gif" id ="todoListLoader" style= "display:none;"> </div>
+            <div id="unAuthorized2" > </div>
+            <div data-role="popup" id="userAccount1" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0"> <span class="welcomeTxtH2"> Using App As :-</span>
+                <h3 class="emailPanel"><span id="userloggedinPanel1"></span></h3>
+                <span id="userEmailIdPanel1" class="adminPanel"></span>
+                <button data-theme="a" data-icon="home" data-mini="true">
+                    <a href="#welcome">Home</a>
+                </button>
+                <button data-theme="a" data-icon="delete" data-mini="true">Close</button>
+                <a href="javascript:void(0);"  data-role="button" data-theme="a" onClick="logOut();">Logout</a> </div>
+            <div class="content-primary" style="margin:3px;"> <span id="words-list-container">
+                    <ul data-role="listview" data-inset="true" data-split-icon="minus" data-split-theme="d" id="todo_list">
+                    </ul>
+                </span> </div>
+            <div data-role="footer" data-id="foo2" data-position="fixed">
+                <div data-role="navbar" data-iconpos="bottom">
+                    <ul>
+                        <li><a href="#welcome" data-prefetch="true" data-icon="home" data-transition="flow">Home</a></li>
+                        <li><a href="#testing" data-prefetch="true" data-icon="grid" data-transition="flow">Friends</a></li>
+                        <li><a href="#add_todo" data-prefetch="true" data-rel="dialog" data-icon="plus" data-transition="flow">Add Todo</a></li>
+                        <li><a href="#todoList" data-prefetch="true" data-icon="grid" onClick="redirect();" data-theme="b">Todo List</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-------------------------------------------------------------- /ADD TODO PAGE --------------------------------------------------------------------------->
+        <div data-role="page" id="add_todo" data-add-back-btn="true" data-back-btn-text="Back">
+            <div data-role="header" data-position="inline" data-theme="f">
+                <h1>Add TODO </h1>
+            </div>
+            <div class="spinner"> <img src="images/spinner.gif" id ="addLoader" style= "display:none;"> </div>
+            <div data-role="content" data-theme="a">
+                <form action="">
+                    <label for="tName"> TODO Name </label>
+                    <input id="tName" placeholder="What To Do..." value="" type="text">
+                    <div data-role="fieldcontain">
+                        <label for="sDate">Start Date:</label>
+                        <input type="date" name="date" id="sDate" value="" />
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="eDate">End Date:</label>
+                        <input type="date" name="date1" id="eDate" value="" />
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="time">Time:</label>
+                        <input type="time" name="time" id="time" value="" />
+                    </div>
+                    <label for="location"> Location: </label>
+                    <input id="location" placeholder="Location..." value="" type="text">
+                    </div>
+                    <a href="javascript:void(0);" data-role="button" data-theme="a" onClick="insertJSONDocument();" data-rel="external" data-icon="check">Submit</a> <a href="index.html#todoList" data-icon="delete" data-role="button" data-rel="back" data-theme="a" data-transition="fade" data-direction="reverse" id="cancel">Cancel</a>
+                </form>
+            </div>
+            <!-------------------------------------------------------------- /TODO DETAILS PAGE --------------------------------------------------------------------------->
+            <div data-role="page" id="todoDetails"  style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+                <div data-role="header" data-theme="f">
+                    <h1><span id ="task" style="display:inline;" ></span><span class="" id="userloggedinn" style="display:inline; padding-left: 300px;"></span></h1>
+                    <a href="#todoList" data-icon="arrow-l" data-transition="slidefade" class="ui-btn-left">Back</a> <a href="#userAccount2" id="logoutBtn2" data-rel="popup" data-transition="slide" data-position-to="window" data-role="button"  class="ui-btn-right">Account</a> <a href="#login" data-icon="back" id="loginBtn2" class="ui-btn-right">Login</a> </div>
+                <div data-role="popup" id="userAccount2" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0"> <span class="welcomeTxtH2"> Using App As :-</span>
+                    <h3 class="emailPanel"><span id="userloggedinPanel2"></span></h3>
+                    <span id="userEmailIdPanel2" class="adminPanel"></span>
+                    <button data-theme="a" data-icon="home" data-mini="true">
+                        <a href="#welcome">Home</a>
+                    </button>
+                    <button data-theme="a" data-icon="delete" data-mini="true">Close</button>
+                    <a href="javascript:void(0);"  data-role="button" data-theme="a" onClick="logOut();">Logout</a> </div>
+                <div id="unAuthorized" > </div>
+                <div data-role="content">
+                    <div data-role="fieldcontain">
+                        <div class="width">
+                            <label for="searchMap" class="location_title">Location*</label>
+                            <div class="refresh_img"><img src="images/refresh.png" id="refreshIcon" onClick="refreshMap();" border="0"></div>
+                            <div class="spinner"> <img src="images/spinner.gif" id ="detailsLoader" style= "display:none;"> </div>
+                            <div class="clear"></div>
+                            <input type="text" name="searchMap" id="searchMap" onKeyUp="hideButtn();" value="New York" class="width"/>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="width">
+                            <div id="map_canvas1" class="map_wrapper"></div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="width marginB">
+                        <div data-inline="true" class="left margin_bot width">
+                            <div class="date_lable">
+                                <label for="sdate">Start Date:</label>
+                            </div>
+                            <div class="date_txt"><span id="sdate"></span></div>
+                        </div>
+                        <div class="left margin_bot width">
+                            <div class="date_lable">
+                                <label for="edate">End Date:</label>
+                            </div>
+                            <div class="date_txt"><span id="edate"></span></div>
+                        </div>
+                        <div class="left margin_bot width">
+                            <div class="date_lable">
+                                <label for="time">Time:</label>
+                            </div>
+                            <div class="date_txt"><span id="timess"></span></div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <a href="#shareTodo" data-inline="true" data-theme="b" data-role="button" data-transition="flow" data-icon="star" data-rel="dialog" class="width margin_bot margin_top">Share this event With your friend</a> </div>
+                <div class="owner_name">
+                    <h4>This Event Created By:-<span id="owner_name"></span></h4>
+                </div>
+                <div data-role="footer" data-id="foo3" data-position="fixed">
+                    <div data-role="navbar" data-iconpos="bottom">
+                        <ul>
+                            <li><a href="#welcome" data-prefetch="true" data-icon="home" data-transition="flow">Home</a></li>
+                            <li><a href="#testing" data-prefetch="true" data-icon="grid" data-transition="flow">Friends</a></li>
+                            <li><a href="#add_todo" data-prefetch="true" data-rel="dialog" data-icon="plus" data-transition="flow">Add Todo</a></li>
+                            <li><a href="#todoList" data-prefetch="true" data-icon="grid" onClick="redirect();">Todo List</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-------------------------------------------------------------- /TODO SHARE PAGE --------------------------------------------------------------------------->
+            <div data-role="page" id="shareTodo" data-add-back-btn="true" data-back-btn-text="Back">
+                <div data-role="header" data-position="inline" data-theme="f">
+                    <h1>Share Todo With Friends</h1>
+                </div>
+                <div class="spinner"> <img src="images/spinner.gif" id ="shareLoader" style= "display:none;"> </div>
+                <div data-role="content" data-theme="a">
+                    <form action="">
+                        <label for="fName"> Friend Name : </label>
+                        <input id="fName" placeholder=" Friend's Name..." autocomplete="on" value="" type="text">
+                        <a href="javascript:void(0);" data-role="button" data-theme="a" onClick="shareTodo();" data-rel="external" data-icon="check">Submit</a> <a href="#todoDetails" data-icon="delete" data-role="button" data-rel="back" data-theme="c" data-transition="fade" data-direction="reverse" id="">Cancel</a>
+                    </form>
+                </div>
+            </div>
+            <!-------------------------------------------------------------- /SUCCESSFULLY SHARED TODO PAGE --------------------------------------------------------------------------->
+            <div data-role="page" id="successShare" data-add-back-btn="true" data-back-btn-text="Back" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+                <div data-role="header" data-position="inline" data-theme="f">
+                    <h1>Successfully Shared </h1>
+                    <a href="#userAccount3"  data-rel="popup" data-transition="slide" data-position-to="window" data-role="button"  class="ui-btn-right">Account</a> </div>
+                <div data-role="popup" id="userAccount3" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0"> <span class="welcomeTxtH2"> Using App As :-</span>
+                    <h3 class="emailPanel"><span id="userloggedinPanel3"></span></h3>
+                    <span id="userEmailIdPanel3" class="adminPanel"></span>
+                    <button data-theme="a" data-icon="home" data-mini="true">
+                        <a href="#welcome">Home</a>
+                    </button>
+                    <button data-theme="a" data-icon="delete" data-mini="true">Close</button>
+                    <a href="javascript:void(0);"  data-role="button" data-theme="a" onClick="logOut();">Logout</a> </div>
+                <div class="spinner"> <img src="images/spinner.gif" id ="shareLoader" style= "display:none;"> </div>
+                <div data-role="content">
+                    <form action="">
+                        <label for="friendName"> Your event is successfully shared with: </label>
+                        <h1><span id="friendName"></span></h1>
+                        <a href="#shareTodo" data-role="button" data-theme="a"   data-rel="dialog" data-icon="check">Share with more friends</a> <a href="#todoDetails" data-icon="delete" data-role="button" data-theme="a" data-transition="fade" onClick="back();" id="">Back</a>
+                    </form>
+                </div>
+                <div data-role="footer" data-id="foo4" data-position="fixed">
+                    <div data-role="navbar" data-iconpos="bottom">
+                        <ul>
+                            <li><a href="#welcome" data-prefetch="true" data-icon="home" data-transition="flow">Home</a></li>
+                            <li><a href="#testing" data-prefetch="true" data-icon="grid" data-transition="flow">Friends</a></li>
+                            <li><a href="#add_todo" data-prefetch="true" data-rel="dialog" data-icon="plus" data-transition="flow">Add Todo</a></li>
+                            <li><a href="#todoList" data-prefetch="true" data-icon="grid" onClick="redirect();">Todo List</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-------------------------------------------------------------- /SUCCESSFULLY SHARED TODO PAGE SECOND --------------------------------------------------------------------------->
+            <div data-role="page" id="successShare2" data-add-back-btn="true" data-back-btn-text="Back" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+                <div data-role="header" data-position="inline" data-theme="f">
+                    <h1>Successfully Shared</h1>
+                    <a href="#userAccount4" id="logoutBtn2" data-rel="popup" data-transition="slide" data-position-to="window" data-role="button"  class="ui-btn-right">Account</a> </div>
+                <div data-role="popup" id="userAccount4" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0"> <span class="welcomeTxtH2"> Using App As :-</span>
+                    <h3 class="emailPanel"><span id="userloggedinPanel4"></span></h3>
+                    <span id="userEmailIdPanel4" class="adminPanel"></span>
+                    <button data-theme="a" data-icon="home" data-mini="true">
+                        <a href="#welcome">Home</a>
+                    </button>
+                    <button data-theme="a" data-icon="delete" data-mini="true">Close</button>
+                    <a href="javascript:void(0);"  data-role="button" data-theme="a" onClick="logOut();">Logout</a> </div>
+                <div class="spinner"> <img src="images/spinner.gif" id ="shareLoaderr" style= "display:none;"> </div>
+                <div data-role="content">
+                    <form action="">
+                        <label for="friendName1"> Your event is successfully shared with: </label>
+                        <h1><span id="friendName1"></span></h1>
+                        <a href="#shareTodo" data-role="button" data-theme="a"   data-rel="dialog" data-icon="check">Share with more friends</a> <a href="#todoDetails" data-icon="delete" data-role="button" data-theme="a" data-transition="fade" onClick="back();" id="">Back</a>
+                    </form>
+                </div>
+                <div data-role="footer" data-id="foo4" data-position="fixed">
+                    <div data-role="navbar" data-iconpos="bottom">
+                        <ul>
+                            <li><a href="#welcome" data-prefetch="true" data-icon="home" data-transition="flow">Home</a></li>
+                            <li><a href="#testing" data-prefetch="true" data-icon="grid" data-transition="flow" onClick="friendsPage();">Friends</a></li>
+                            <li><a href="#add_todo" data-prefetch="true" data-rel="dialog" data-icon="plus" data-transition="flow">Add Todo</a></li>
+                            <li><a href="#todoList" data-prefetch="true" data-icon="grid" onClick="redirect();">Todo List</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-------------------------------------------------------------- /FRIENDS LIST PAGE --------------------------------------------------------------------------->
+            <div data-role="page" id="testing" data-add-back-btn="true" data-back-btn-text="Back" style="background: #000000 url('images/pagebg.png');  background-repeat:repeat-x; background-position:center;">
+                <div data-role="header" data-position="inline" data-theme="a">
+                    <h1>Friends</h1>
+                    <a href="#userAccount5" id="logoutBtn2" data-rel="popup" data-transition="slide" data-position-to="window" data-role="button"  class="ui-btn-right">Account</a> </div>
+                <div data-role="popup" id="userAccount5" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0"> <span class="welcomeTxtH2"> Using App As :-</span>
+                    <h3 class="emailPanel"><span id="userloggedinPanel5"></span></h3>
+                    <span id="userEmailIdPanel5" class="adminPanel"></span>
+                    <button data-theme="a" data-icon="home" data-mini="true">
+                        <a href="#welcome">Home</a>
+                    </button>
+                    <button data-theme="a" data-icon="delete" data-mini="true">Close</button>
+                    <a href="javascript:void(0);"  data-role="button" data-theme="a" onClick="logOut();">Logout</a> </div>
+                <div class="content-primary" style="margin:3px;"> <span id="words-list-container1">
+                        <ul data-role="listview" data-inset="true"  data-split-theme="a" id="frnds_list">
+                        </ul>
+                    </span> </div>
+                <div data-role="footer" data-id="foo5" data-position="fixed">
+                    <div data-role="navbar" data-iconpos="bottom">
+                        <ul>
+                            <li><a href="#welcome" data-prefetch="true" data-icon="home" data-transition="flow">Home</a></li>
+                            <li><a href="#testing" data-prefetch="true" data-icon="grid" data-transition="flow" data-theme="b">Friends</a></li>
+                            <li><a href="#add_todo" data-prefetch="true" data-rel="dialog" data-icon="plus" data-transition="flow">Add Todo</a></li>
+                            <li><a href="#todoList" data-prefetch="true" data-icon="grid" data-rel="dialog" data-transition="flow">Todo List</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-------------------------------------------------------------- /TODO SHARE WITH FRIEND PAGE --------------------------------------------------------------------------->
+            <div data-role="page" id="shareTodoWithFriend" data-add-back-btn="true" data-back-btn-text="Back">
+                <div data-role="header" data-position="inline" data-theme="f">
+                    <h1>Share Todo With Your Friend</h1>
+                </div>
+                <div class="spinner"> <img src="images/spinner.gif" id ="shareLoader" style= "display:none;"> </div>
+                <div data-role="content" data-theme="a">
+                    <form action="">
+                        <label for="tNamef"> TODO Name </label>
+                        <input id="tNamef" placeholder="What To Do..." value="" type="text">
+                        <div data-role="fieldcontain">
+                            <label for="sDatef">Start Date:</label>
+                            <input type="date" name="date" id="sDatef" value="" />
+                        </div>
+                        <div data-role="fieldcontain">
+                            <label for="eDatef">End Date:</label>
+                            <input type="date" name="date1" id="eDatef" value="" />
+                        </div>
+                        <div data-role="fieldcontain">
+                            <label for="timef">Time:</label>
+                            <input type="time" name="time" id="timef" value="" />
+                        </div>
+                        <label for="locationf"> Location: </label>
+                        <input id="locationf" placeholder="Location..." value="" type="text">
+                        </div>
+                        <a href="javascript:void(0);" data-role="button" data-theme="a" onClick="shareTodoWithFriend();" data-rel="external" data-icon="check">Submit</a> <a href="#todoDetails" data-icon="delete" data-role="button" data-rel="back" data-theme="c" data-transition="fade" data-direction="reverse" id="">Cancel</a>
+                    </form>
+                </div>
+            </div>
+            <script src="js/map.js"></script>
+    </body>
+</html>

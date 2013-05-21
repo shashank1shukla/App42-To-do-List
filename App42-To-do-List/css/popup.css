@@ -1,0 +1,16 @@
+iframe { border: none; }
+
+#userAccount-popup, #userAccount1-popup, #userAccount2-popup, #userAccount3-popup, #userAccount4-popup, #userAccount5-popup {
+	right: 0 !important;
+	left: auto !important;
+}
+#userAccount, #userAccount1, #userAccount2, #userAccount3, #userAccount4, #userAccount5 {
+	width: 200px;
+	border: 1px solid #000;
+	border-right: none;
+	background: rgba(0,0,0,.5);
+	margin: -1px 0;
+}
+#userAccount .ui-btn, #userAccount1 .ui-btn, #userAccount2 .ui-btn, #userAccount3 .ui-btn, #userAccount4 .ui-btn, #userAccount5 .ui-btn {
+	margin: 2em 15px;
+}
